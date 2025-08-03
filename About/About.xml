@@ -60,7 +60,7 @@
     [*]Initial release
     [/list]
   </ChangeLog>
-  <!-- <WorkshopHandle></WorkshopHandle> -->
+  <WorkshopHandle>3540882603</WorkshopHandle>
   <!-- StationeersMods and BepInEx tags for Steam workshop page will be automatically added by the framework when publishing -->
   <Tags>
     <Tag>StationeersLaunchPad</Tag>
@@ -79,14 +79,14 @@ See: https://github.com/StationeersLaunchPad/StationeersLaunchPad
 This mod modifies the WriteTradeData Stack Instruction for the medium satellite dish so it can return a list of seen contacts, just like the computer.
 
 Instruction is now
-| 0-7   | Opcode                       | BYTE_8 |
-| 8-15  | WRITE_INDEX                  | BYTE_8 |
-| 16-23 | MAX_ENTRY_COUNT              | BYTE_8 |
-| 24-31 | EXCLUDE_TIER_BITFLAG         | BYTE_8 |
-| 32-39 | EXCLUDE_SHUTTLE_TYPE_BITFLAG | BYTE_8 |
-| 40-47 | EXCLUDE_CONTACTED_BITFLAG    | BYTE_8 |
-| 48-55 | EXCLUDE_REQUIRED_ENV_BITFLAG | BYTE_8 |
-| 56-63 | UNUSED                       | 8      |
+| 0-7   | OPCODE
+| 8-15  | WRITE_INDEX
+| 16-23 | MAX_ENTRY_COUNT
+| 24-31 | EXCLUDE_TIER_BITFLAG
+| 32-39 | EXCLUDE_SHUTTLE_TYPE_BITFLAG
+| 40-47 | EXCLUDE_CONTACTED_BITFLAG
+| 48-55 | EXCLUDE_REQUIRED_ENV_BITFLAG
+| 56-63 | UNUSED
 
 If MAX_ENTRY_COUNT is 0, the instruction behaves like vanilla.
 Otherwise, it will print out a list of Trade Data from its contacts, ordered by signal strength, starting at the write address and continuing until it reaches max entries or till there is no more contacts.

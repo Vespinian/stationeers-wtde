@@ -71,9 +71,6 @@
         <_CopyItemsGameData Include="$(ProjectDir)\GameData\**\*.*" />
         <_CopyItemsAbout Include="$(ProjectDir)\About\**\*.*" />
     </ItemGroup>
-    <ItemGroup>
-      <_CopyItemsAbout Remove="About\thumb.png" />
-    </ItemGroup>
     <Target Name="AfterBuild">
         <Message Text="### AfterBuild ###" Importance="high" />
         <Message Text="Copying mod files to mod folder." Importance="high" />
