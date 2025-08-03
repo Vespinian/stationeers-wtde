@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Name>Write Trade Data Expanded</Name>
+  <Name>Write Trade Data Extended</Name>
   <Author>Vespinian</Author>
   <Version>1.0</Version>
   <!-- Steam description using steam styling tags for Steam workshop page -->
@@ -9,9 +9,48 @@
     It requires Bepinex to be installed with the StationeersLaunchPad plugin.
     See: https://github.com/StationeersLaunchPad/StationeersLaunchPad
 
+    This mod modifies the WriteTradeData Stack Instruction for the medium satellite dish so it can return a list of seen contacts, just like the computer.
 
+    Instruction is now
+    | 0-7   | Opcode                       | BYTE_8 |
+    | 8-15  | WRITE_INDEX                  | BYTE_8 |
+    | 16-23 | MAX_ENTRY_COUNT              | BYTE_8 |
+    | 24-31 | EXCLUDE_TIER_BITFLAG         | BYTE_8 |
+    | 32-39 | EXCLUDE_SHUTTLE_TYPE_BITFLAG | BYTE_8 |
+    | 40-47 | EXCLUDE_CONTACTED_BITFLAG    | BYTE_8 |
+    | 48-55 | EXCLUDE_REQUIRED_ENV_BITFLAG | BYTE_8 |
+    | 56-63 | UNUSED                       | 8      |
 
-    Repo: 
+    If MAX_ENTRY_COUNT is 0, the instruction behaves like vanilla.
+    Otherwise, it will print out a list of Trade Data from its contacts, ordered by signal strength, starting at the write address and continuing until it reaches max entries or till there is no more contacts.
+    Remember that an every entry is 3 stack addresses, so a max entry count of 3 can consume up to 9 addresses in the stack.
+
+    The exclude flags are not exclusive, so you can filter out multiple things at the same time
+    For example EXCLUDE_SHUTTLE_TYPE_BITFLAG = 0xC0 will filter out all planes
+
+    EXCLUDE_TIER_BITFLAG
+    Close = 1
+    Medium = 2
+    Far = 4
+
+    EXCLUDE_SHUTTLE_TYPE_BITFLAG
+    Small = 1
+    SmallGas = 2
+    Medium = 4
+    MediumGas = 8
+    Large = 16
+    LargeGas = 32
+    MediumPlane = 64
+    LargePlane = 128
+
+    EXCLUDE_CONTACTED_BITFLAG
+    ExcludeUncontacted = 1
+    ExcludeContacted = 2
+
+    EXCLUDE_REQUIRED_ENV_BITFLAG
+    ExcludeHuman = 1
+    ExcludeZrilian = 2
+
   </Description>
   <!-- Ingame Description using TMP tags for Workshop menu -->
   <!-- All contents of ChangeLog should be changed for each publication for Steam workshop page -->
@@ -21,7 +60,7 @@
     [*]Initial release
     [/list]
   </ChangeLog>
-  <!-- <WorkshopHandle>3540629846</WorkshopHandle> -->
+  <!-- <WorkshopHandle></WorkshopHandle> -->
   <!-- StationeersMods and BepInEx tags for Steam workshop page will be automatically added by the framework when publishing -->
   <Tags>
     <Tag>StationeersLaunchPad</Tag>
@@ -32,13 +71,54 @@
   <LoadBefore />
   <LoadAfter />
   <InGameDescription>
-    <![CDATA[<size="30"><color=#ffa500> Write Trade Data Expanded </color></size>
+    <![CDATA[<size="30"><color=#ffa500> Write Trade Data Extended </color></size>
 This is a Plugin Mod.
 It requires Bepinex to be installed with the StationeersLaunchPad plugin.
 See: https://github.com/StationeersLaunchPad/StationeersLaunchPad
 
+This mod modifies the WriteTradeData Stack Instruction for the medium satellite dish so it can return a list of seen contacts, just like the computer.
 
-Repo: 
+Instruction is now
+| 0-7   | Opcode                       | BYTE_8 |
+| 8-15  | WRITE_INDEX                  | BYTE_8 |
+| 16-23 | MAX_ENTRY_COUNT              | BYTE_8 |
+| 24-31 | EXCLUDE_TIER_BITFLAG         | BYTE_8 |
+| 32-39 | EXCLUDE_SHUTTLE_TYPE_BITFLAG | BYTE_8 |
+| 40-47 | EXCLUDE_CONTACTED_BITFLAG    | BYTE_8 |
+| 48-55 | EXCLUDE_REQUIRED_ENV_BITFLAG | BYTE_8 |
+| 56-63 | UNUSED                       | 8      |
+
+If MAX_ENTRY_COUNT is 0, the instruction behaves like vanilla.
+Otherwise, it will print out a list of Trade Data from its contacts, ordered by signal strength, starting at the write address and continuing until it reaches max entries or till there is no more contacts.
+Remember that an every entry is 3 stack addresses, so a max entry count of 3 can consume up to 9 addresses in the stack.
+
+The exclude flags are not exclusive, so you can filter out multiple things at the same time
+For example EXCLUDE_SHUTTLE_TYPE_BITFLAG = 0xC0 will filter out all planes
+
+EXCLUDE_TIER_BITFLAG
+  Close = 1
+  Medium = 2
+  Far = 4
+
+EXCLUDE_SHUTTLE_TYPE_BITFLAG
+  Small = 1
+  SmallGas = 2
+  Medium = 4
+  MediumGas = 8
+  Large = 16
+  LargeGas = 32
+  MediumPlane = 64
+  LargePlane = 128
+
+EXCLUDE_CONTACTED_BITFLAG
+  ExcludeUncontacted = 1
+  ExcludeContacted = 2
+
+EXCLUDE_REQUIRED_ENV_BITFLAG
+  ExcludeHuman = 1
+  ExcludeZrilian = 2
+
+Repo: https://github.com/Vespinian/stationeers-wtde
 ]]>
   </InGameDescription>
 </ModMetadata>

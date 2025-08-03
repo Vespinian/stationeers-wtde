@@ -4,12 +4,12 @@
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <TargetFramework>net47</TargetFramework>
         <OutputPath>bin\Debug</OutputPath>
-        <ModName>WriteTradeDataExpanded</ModName>
+        <ModName>WriteTradeDataExtended</ModName>
         <UserDir>$(HOMEDRIVE)$(HOMEPATH)</UserDir>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-        <AssemblyName>WriteTradeDataExpanded</AssemblyName>
-        <RootNamespace>WriteTradeDataExpanded</RootNamespace>
+        <AssemblyName>WriteTradeDataExtended</AssemblyName>
+        <RootNamespace>WriteTradeDataExtended</RootNamespace>
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -29,7 +29,7 @@
         <WarningLevel>4</WarningLevel>
         <Prefer32Bit>false</Prefer32Bit>
     </PropertyGroup>
-    <Import Project="$(SolutionDir)WriteTradeDataExpanded.VS.props" />
+    <Import Project="$(SolutionDir)WriteTradeDataExtended.VS.props" />
     <ItemGroup>
         <Reference Include="Assembly-CSharp">
             <HintPath>$(StationeersDirectory)\rocketstation_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -70,6 +70,9 @@
     <ItemGroup>
         <_CopyItemsGameData Include="$(ProjectDir)\GameData\**\*.*" />
         <_CopyItemsAbout Include="$(ProjectDir)\About\**\*.*" />
+    </ItemGroup>
+    <ItemGroup>
+      <_CopyItemsAbout Remove="About\thumb.png" />
     </ItemGroup>
     <Target Name="AfterBuild">
         <Message Text="### AfterBuild ###" Importance="high" />

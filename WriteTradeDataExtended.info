@@ -1,7 +1,7 @@
 {
-  "_name": "WriteTradeDataExpanded",
+  "_name": "WriteTradeDataExtended",
   "_author": "Vespinian",
-  "_description": "Expands the functionality of the WriteTradeData opcode",
+  "_description": "Extends the functionality of the WriteTradeData opcode",
   "_version": "1.0",
   "_unityVersion": "2021.2.13f1",
   "_platforms": 1,

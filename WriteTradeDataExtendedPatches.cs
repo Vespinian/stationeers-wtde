@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace WriteTradeDataExpanded
+namespace WriteTradeDataExtended
 {
     //[Flags]
     //enum ExcludeShuttleTypeBitFlag
@@ -38,6 +38,14 @@ namespace WriteTradeDataExpanded
     //    ExcludeContacted = 2,
     //}
 
+    //[Flags]
+    //enum ExcludeRequiredEnvBitFlag
+    //{
+    //    None = 0,
+    //    Human = 1,
+    //    Zrilian = 2,
+    //}
+
     [HarmonyPatch(typeof(MediumSatelliteDish))]
     [HarmonyPatch("WriteTraderData")]
     public class WriteTraderDataPatch
@@ -54,6 +62,7 @@ namespace WriteTradeDataExpanded
             int exclude_tier_bitflag = unpacked_bytes[3];
             int exclude_shuttle_bitflag = unpacked_bytes[4];
             int exclude_contacted_bitflag = unpacked_bytes[5];
+            int exclude_env_required_bitflag = unpacked_bytes[6];
 
 
             if (max_entries_to_write == 0) {
@@ -109,6 +118,19 @@ namespace WriteTradeDataExpanded
                     continue;
                 }
 
+                if (contact.Contact.HasEnvironmentRequirement)
+                {
+                    if (((exclude_env_required_bitflag & 1) == 1) && (contact.Contact.RequiredPadEnvironment == CharacterCustomisation.SpeciesClass.Human))
+                    {
+                        continue;
+                    }
+                    if (((exclude_env_required_bitflag & 2) == 2) && (contact.Contact.RequiredPadEnvironment == CharacterCustomisation.SpeciesClass.Zrilian))
+                    {
+                        continue;
+                    }
+                }
+
+
                 int value = contact.Contact.TradeData.TraderData.IdHash;
                 byte @byte = (byte)contact.Contact.ShuttleType;
                 byte byte2 = (byte)(contact.Contact.Contacted ? 1 : 0);
@@ -149,6 +171,7 @@ namespace WriteTradeDataExpanded
                     new LogicStack.InstructionFormat("Exclude_Tier_Bitflag", typeof(byte)),
                     new LogicStack.InstructionFormat("Exclude_Shuttle_Type_Bitflag", typeof(byte)),
                     new LogicStack.InstructionFormat("Exclude_Contacted_Bitflag", typeof(byte)),
+                    new LogicStack.InstructionFormat("Exclude_Required_Env_Bitflag", typeof(byte)),
                 });
             }
             return;
