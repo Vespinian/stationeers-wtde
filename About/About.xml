@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>Write Trade Data Expanded</Name>
+  <Author>Vespinian</Author>
+  <Version>1.0</Version>
+  <!-- Steam description using steam styling tags for Steam workshop page -->
+  <Description>
+    This is a Plugin Mod.
+    It requires Bepinex to be installed with the StationeersLaunchPad plugin.
+    See: https://github.com/StationeersLaunchPad/StationeersLaunchPad
+
+
+
+    Repo: 
+  </Description>
+  <!-- Ingame Description using TMP tags for Workshop menu -->
+  <!-- All contents of ChangeLog should be changed for each publication for Steam workshop page -->
+  <ChangeLog>
+    [h3]Version 1.0:[/h3]
+    [list]
+    [*]Initial release
+    [/list]
+  </ChangeLog>
+  <!-- <WorkshopHandle>3540629846</WorkshopHandle> -->
+  <!-- StationeersMods and BepInEx tags for Steam workshop page will be automatically added by the framework when publishing -->
+  <Tags>
+    <Tag>StationeersLaunchPad</Tag>
+  </Tags>
+  <!-- Automatic downloads of dependencies -->
+  <Dependencies />
+  <!-- Automatic reordering of the mods list -->
+  <LoadBefore />
+  <LoadAfter />
+  <InGameDescription>
+    <![CDATA[<size="30"><color=#ffa500> Write Trade Data Expanded </color></size>
+This is a Plugin Mod.
+It requires Bepinex to be installed with the StationeersLaunchPad plugin.
+See: https://github.com/StationeersLaunchPad/StationeersLaunchPad
+
+
+Repo: 
+]]>
+  </InGameDescription>
+</ModMetadata>
