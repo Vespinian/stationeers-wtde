@@ -2,31 +2,58 @@
 <ModMetadata xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Write Trade Data Extended</Name>
   <Author>Vespinian</Author>
-  <Version>1.0</Version>
+  <Version>1.1</Version>
   <!-- Steam description using steam styling tags for Steam workshop page -->
   <Description>
     This is a Plugin Mod.
     It requires Bepinex to be installed with the StationeersLaunchPad plugin.
     See: https://github.com/StationeersLaunchPad/StationeersLaunchPad
 
+    UPDATE: Changed MAX_ENTRY_COUNT to CONTACT_ID_AND_MAX_ENTRY_CNT. The 2 high bits of this byte allows you to get the ContactId used in the BestContactFilter data parameter. The lower 6 bits work like MAX_ENTRY_COUNT was before.
+
     This mod modifies the WriteTradeData Stack Instruction for the medium satellite dish so it can return a list of seen contacts, just like the computer.
 
     Instruction is now
     | 0-7   | Opcode                       | BYTE_8 |
     | 8-15  | WRITE_INDEX                  | BYTE_8 |
-    | 16-23 | MAX_ENTRY_COUNT              | BYTE_8 |
+    | 16-23 | CONTACT_ID_AND_MAX_ENTRY_CNT | BYTE_8 |
     | 24-31 | EXCLUDE_TIER_BITFLAG         | BYTE_8 |
     | 32-39 | EXCLUDE_SHUTTLE_TYPE_BITFLAG | BYTE_8 |
     | 40-47 | EXCLUDE_CONTACTED_BITFLAG    | BYTE_8 |
     | 48-55 | EXCLUDE_REQUIRED_ENV_BITFLAG | BYTE_8 |
-    | 56-63 | UNUSED                       | 8      |
+    | 56-63 | UNUSED                       | BYTE_8 |
 
-    If MAX_ENTRY_COUNT is 0, the instruction behaves like vanilla.
+    If the max_entry_count is 0, the instruction behaves like vanilla.
     Otherwise, it will print out a list of Trade Data from its contacts, ordered by signal strength, starting at the write address and continuing until it reaches max entries or till there is no more contacts.
-    Remember that an every entry is 3 stack addresses, so a max entry count of 3 can consume up to 9 addresses in the stack.
+    Remember that every entry is 3-5 stack addresses, so a max entry count of 3 can consume up to 15 addresses in the stack.
 
     The exclude flags are not exclusive, so you can filter out multiple things at the same time
     For example EXCLUDE_SHUTTLE_TYPE_BITFLAG = 0xC0 will filter out all planes
+
+    You can use the upper 2 bits of CONTACT_ID_AND_MAX_ENTRY_COUNT to retrieve the ContactId used in the BestContactFilter network property. LSB will give the lower 48 bits and MSB the upper 16 bits in two new TraderInstructions. You might not need the upper 16 bits since I think the ContactIds are just incremental ReferenceIds but the diassembly shows that the ContactIds are longs so technically they can be negative.
+    The new instruction are added after the StrongestContactSignalData instruction as the 4th or 5th payload segment.
+    This means you get up to 5 entries per WriteTradeData contact, adjust accordingly. 
+    The dish will always write LSB first and MSB second if both are present. 
+    In the the mod configuration you can change the opcodes for the 2 new trader instructions.
+    Default Opcodes are 19 for LSB and 20 for MSB
+
+    ContactId LSB Instruction
+    | 0-7   | OPCODE
+    | 8-55  | CONTACT_ID_BITS (0-47)
+    | 56-63 | UNUSED
+
+    ContactId MSB Instruction
+    | 0-7   | OPCODE
+    | 8-23  | CONTACT_ID_BITS (48-63)
+    | 24-63 | UNUSED
+
+    CONTACT_ID_AND_MAX_ENTRY_CNT 
+    | 0-5 | MAX_ENTRY_COUNT
+    | 6-7 | CONTACTID_BITFLAG
+
+    CONTACTID_BITFLAG
+    ContactIdLSB = 1
+    ContactIdMSB = 2
 
     EXCLUDE_TIER_BITFLAG
     Close = 1
@@ -55,6 +82,10 @@
   <!-- Ingame Description using TMP tags for Workshop menu -->
   <!-- All contents of ChangeLog should be changed for each publication for Steam workshop page -->
   <ChangeLog>
+    [h3]Version 1.1:[/h3]
+    [list]
+    [*]Added ContactId Bitflag in MAX_ENTRY_COUNT which can help you retrieve the ContactId used in BestContactFilter
+    [/list]
     [h3]Version 1.0:[/h3]
     [list]
     [*]Initial release
@@ -76,12 +107,14 @@ This is a Plugin Mod.
 It requires Bepinex to be installed with the StationeersLaunchPad plugin.
 See: https://github.com/StationeersLaunchPad/StationeersLaunchPad
 
+UPDATE: Changed MAX_ENTRY_COUNT to CONTACT_ID_AND_MAX_ENTRY_CNT. The 2 high bits of this byte allows you to get the ContactId used in the BestContactFilter data parameter. The lower 6 bits work like MAX_ENTRY_COUNT was before.
+
 This mod modifies the WriteTradeData Stack Instruction for the medium satellite dish so it can return a list of seen contacts, just like the computer.
 
 Instruction is now
 | 0-7   | OPCODE
 | 8-15  | WRITE_INDEX
-| 16-23 | MAX_ENTRY_COUNT
+| 16-23 | CONTACT_ID_AND_MAX_ENTRY_CNT
 | 24-31 | EXCLUDE_TIER_BITFLAG
 | 32-39 | EXCLUDE_SHUTTLE_TYPE_BITFLAG
 | 40-47 | EXCLUDE_CONTACTED_BITFLAG
@@ -90,10 +123,35 @@ Instruction is now
 
 If MAX_ENTRY_COUNT is 0, the instruction behaves like vanilla.
 Otherwise, it will print out a list of Trade Data from its contacts, ordered by signal strength, starting at the write address and continuing until it reaches max entries or till there is no more contacts.
-Remember that an every entry is 3 stack addresses, so a max entry count of 3 can consume up to 9 addresses in the stack.
+Remember that every entry is 3-5 stack addresses, so a max entry count of 3 can consume up to 15 addresses in the stack.
 
 The exclude flags are not exclusive, so you can filter out multiple things at the same time
 For example EXCLUDE_SHUTTLE_TYPE_BITFLAG = 0xC0 will filter out all planes
+
+You can use the upper 2 bits of CONTACT_ID_AND_MAX_ENTRY_COUNT to retrieve the ContactId used in the BestContactFilter network property. LSB will give the lower 48 bits and MSB the upper 16 bits in two new TraderInstructions. You might not need the upper 16 bits since I think the ContactIds are just incremental ReferenceIds but the diassembly shows that the ContactIds are longs so technically they can be negative.
+The new instruction are added after the StrongestContactSignalData instruction as the 4th or 5th payload segment.
+This means you get up to 5 entries per WriteTradeData contact, adjust accordingly. 
+The dish will always write LSB first and MSB second if both are present. 
+In the the mod configuration you can change the opcodes for the 2 new trader instructions.
+Default Opcodes are 19 for LSB and 20 for MSB
+
+ContactId LSB Instruction
+| 0-7   | OPCODE
+| 8-55  | CONTACT_ID_BITS (0-47)
+| 56-63 | UNUSED
+
+ContactId MSB Instruction
+| 0-7   | OPCODE
+| 8-23  | CONTACT_ID_BITS (48-63)
+| 24-63 | UNUSED
+
+CONTACT_ID_AND_MAX_ENTRY_CNT 
+| 0-5 | MAX_ENTRY_COUNT
+| 6-7 | CONTACTID_BITFLAG
+
+CONTACTID_BITFLAG
+  ContactIdLSB = 1
+  ContactIdMSB = 2
 
 EXCLUDE_TIER_BITFLAG
   Close = 1
